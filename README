@@ -1,8 +1,10 @@
 Diaoduapi
 =========
 
-Introduction goes here.
-
+api接口插件
+1，包括频道的获取
+2，最新版本的api interface
+3，直播(需要与流媒体服务器配合)
 
 Example
 =======
@@ -10,4 +12,4 @@ Example
 Example goes here.
 
 
-Copyright (c) 2011 [name of plugin creator], released under the MIT license
+Copyright (c) 2011 [chucai hexudong08@gmail.com], released under the MIT license
