@@ -1,4 +1,5 @@
 require 'diaoduapi/route'
+require 'diaoduapi/acts_as_flow'
 
 %w{ controllers models }.each do |dir|
   path = File.join(File.dirname(__FILE__), 'app', dir)
