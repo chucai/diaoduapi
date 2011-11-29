@@ -1,5 +1,5 @@
 class Video < ActiveRecord::Base
-  validates_presence_of :user, :encoding, :size, :tid, :server_url 
+  validates_presence_of :user_id, :encoding, :size, :tid, :server_url 
   validates_uniqueness_of :tid
 
   belongs_to :user

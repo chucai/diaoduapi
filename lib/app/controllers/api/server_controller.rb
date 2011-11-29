@@ -1,7 +1,6 @@
 class Api::ServerController < ApplicationController
   layout false
 
-
   #return token for system
   def server_token
     respond_to do |format|
