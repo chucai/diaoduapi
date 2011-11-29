@@ -7,7 +7,7 @@ class DiaoduapiCreateTables < ActiveRecord::Migration
       t.integer  "length"
       t.string   "encoding"
       t.string   "tid"
-      t.boolean  "private",    :default => true
+      t.integer  "private",    :default => 0
       t.integer  "visited",    :default => 1
       t.string   "vstate",     :default => "living"
       t.float    "lat",        :default => 0.0

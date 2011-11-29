@@ -22,17 +22,14 @@ class Video < ActiveRecord::Base
     hash = Hash.new
     if self.living?
       hash[:type] = "LIVE"
-      hash[:title] = params[:title]
-      hash[:url] = "http://"+CONFIG_APP[:leshi_server_ip] + ":" + CONFIG_APP[:leshi_server_out_port].to_s  + "/" + params[:url]
-      hash[:tid] =  params[:id]
-      hash[:header] = user.header
-      hash[:privacy] = living.private
+      hash[:title] = self.title
+      hash[:url] = self.url
+      hash[:tid] =  self.tid
     else
       hash[:type] = "ARCHIVED"
       hash[:id] = self.id
       hash[:title] = self.title
       hash[:url] = self.preview
-      hash[:created] =  Time.at(self.created.to_i).strftime("%Y年%m月%d日 %H:%M:%S")
       hash[:tid] = self.tid
       hash[:privacy] = self.private
     end
@@ -42,5 +39,20 @@ class Video < ActiveRecord::Base
   def change_living_to_archived 
     self.update_attribute(:vstate, "archived")  
   end
- 
+
+  def url
+    "#{self.server_url}#{self.tid}.flv"
+  end
+
+  def preview 
+    "#{self.server_url}#{self.tid}.jpg"
+  end
+
+  def comments
+    find_comments_by_tid  
+  end
+
+  def find_comments_by_tid
+    Comment.find :all, :conditions => ["tid = ?", self.tid], :order => ["created_at ASC"]
+  end
 end

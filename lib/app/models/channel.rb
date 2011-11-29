@@ -3,7 +3,7 @@ validates_presence_of :token, :user_id
 validates_uniqueness_of :token
 
 belongs_to :user
-#belongs_to :video 
+belongs_to :video
 
 named_scope :last, :order => "created_at DESC", :limit => 1
 named_scope :living, :conditions => ["cstate = 'living'"]
@@ -16,14 +16,14 @@ result = "http://#{CONFIG_APP[:web_server]}/#{self.token}"
 result
 end
 
- def video
-   if self.cstate == "living" or self.cstate == 'visited'
-     video = Living.find_by_id(self.video_id) if(self.video_id and self.video_id != 0)
-   else
-     video = Archive.find_by_id(self.video_id) if(self.video_id and self.video_id != 0)
-   end
-   video
- end
+# def video
+#   if self.cstate == "living" or self.cstate == 'visited'
+#     video = Living.find_by_id(self.video_id) if(self.video_id and self.video_id != 0)
+#   else
+#     video = Archive.find_by_id(self.video_id) if(self.video_id and self.video_id != 0)
+#   end
+#   video
+# end
 
 protected
 def before_validation_on_create

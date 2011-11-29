@@ -7,6 +7,9 @@ module Didaoduapi
     def acts_as_flow(options = {})
       send :include , InstanceMethods 
    
+      has_many :videos, :dependent => :destroy
+      has_many :channels
+
       def self.authenticate_for_mobile?(username, challenge,response)
         return true
         u = find_by_username(username)

@@ -28,9 +28,12 @@ class Api::ServerController < ApplicationController
     respond_to do |format|
       format.json {
         archive = Video.find_by_tid(params[:video][:tid])
-        archive.update_attributes(params[:video]) if archive
+        Archive.transaction do 
+          archive.update_attributes(params[:video]) 
+          archive.update_attribute(:vstate, 'archived') 
+        end if archive
         if archive and archive.save!
-          if archive.private.eql?(3)
+          if archive.private.eql?(2)
             user = archive.user
             channel = user.channels.living.last || user.channels.visited.last
             if channel
@@ -85,8 +88,12 @@ class Api::ServerController < ApplicationController
         tid = params[:video][:tid]
         video = Video.find_by_tid(tid)
         if video
-          c = Channel.find(:first , :conditions => ["cstate = 'living' and video_id = ?", video.id])
-          @channel = "/location/#{c.token}" if c
+          c = Channel.find(:first , :conditions => ["video_id = ?", video.id])
+          if c
+            c.update_attribute(:vstate, "archived")
+            @channel = "/location/#{c.token}"
+            c.update_attribute(:cstate, "archived")
+          end
         end 
         hash = {}
         status = 400
