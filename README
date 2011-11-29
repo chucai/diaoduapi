@@ -9,8 +9,14 @@ api接口插件
 Need
 =======
 1, devise 
+should install devise
 
-Example goes here.
+2, how to use
+2.1 install use plugin
+2.2 create tables:
+ruby script/generate diaoduapi names
+rake db:migrate
+
 
 
 Copyright (c) 2011 [chucai hexudong08@gmail.com], released under the MIT license
