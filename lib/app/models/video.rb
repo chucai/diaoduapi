@@ -3,6 +3,7 @@ class Video < ActiveRecord::Base
   validates_uniqueness_of :tid
 
   belongs_to :user
+  has_one :channel
 
   named_scope :recently_resource, :order => "created_at DESC"
   named_scope :living, :conditions => ["vstate = 'living'"]
@@ -21,17 +22,18 @@ class Video < ActiveRecord::Base
   def to_hash
     hash = Hash.new
     if self.living?
-      hash[:type] = "LIVE"
+      hash[:type] = "LIVING"
       hash[:title] = self.title
       hash[:url] = self.url
       hash[:tid] =  self.tid
+      hash[:rtmp_url] = "rtmp://#{CONFIG_APP[:leshi_server_ip]}/#{self.tid}&live=1" 
     else
       hash[:type] = "ARCHIVED"
       hash[:id] = self.id
       hash[:title] = self.title
-      hash[:url] = self.preview
+      hash[:url] = self.url
       hash[:tid] = self.tid
-      hash[:privacy] = self.private
+      hash[:rtmp_url] = "rtmp://#{CONFIG_APP[:leshi_server_ip]}/#{self.tid}&live=0" 
     end
     hash
   end

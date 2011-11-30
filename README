@@ -8,8 +8,9 @@ api接口插件
 
 Need
 =======
-1, devise 
-should install devise
+1, devise && faye 
+gem install devise
+gem install faye
 
 2, how to use
 2.1 install use plugin
