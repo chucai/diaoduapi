@@ -58,6 +58,6 @@ class Video < ActiveRecord::Base
   end
 
   def find_comments_by_tid
-    Comment.find :all, :conditions => ["tid = ?", self.tid], :order => ["created_at ASC"]
+    Comment.find :all, :conditions => ["tid = ?", self.tid], :order => ["created_at DESC"]
   end
 end

@@ -5,7 +5,8 @@ class BroadCast
   def self.push_message(channel, data)
     message = {:channel => channel, :data => data}
     uri = URI.parse(BroadCast.faye_url)
-    Net::HTTP.post_form(uri, :message => message.to_json) 
+    Net::HTTP.post_form(uri, :message => message.to_json)
+    Rails.logger.info("channel is #{channel} ------------------------------------")
   end
 
   def self.faye_url

@@ -81,5 +81,20 @@ class Api::ClientController < ApplicationController
      }
    end
   end
+
+  #update video's title
+  def update
+    respond_to do |wants|
+      wants.json{
+        video = Video.find_by_tid(params[:tid])
+        if(video.user == current_user and video.update_attributes(params[:video])){
+          render :json => {:result => "update success!"}
+        } else {
+          render :json => {:result => "update failed!"}, :status => 400
+        }
+      }
+    end
+  end
+
 end
 
