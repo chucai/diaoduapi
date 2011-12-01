@@ -33,18 +33,18 @@ class Api::ServerController < ApplicationController
           archive.update_attribute(:vstate, 'archived') 
         end if archive
         if archive and archive.save!
+          user = archive.user
           if archive.private.eql?(2)
-            user = archive.user
-            channel = user.channels.living.last || user.channels.visited.last
-            if channel
-              Channel.transaction do 
-               channel.update_attribute(:cstate, "archive")  
-               channel.update_attribute(:video_id, archive.id)
-              end
-              @channel = "/#{channel.token}"
-              BroadCast.push_message(@channel, archive.to_hash)
+            channel = archive.channel || user.channels.living.last || user.channels.visited.last
+            Channel.transaction do 
+              channel.update_attribute(:cstate, "archive")  
+              channel.update_attribute(:video_id, archive.id)
             end
+            @channel = "/#{channel.token}"
+          else
+            @channel = "/#{user.username}"
           end
+          BroadCast.push_message(@channel, archive.to_hash)
           render :json => {:result => I18n.t('application.archived.success')}.to_json
         else
           render :json => {:result => I18n.t('application.archived.fail')}.to_json , :status => 400
@@ -68,11 +68,14 @@ class Api::ServerController < ApplicationController
                 channel.update_attribute(:video_id, living.id)
               end
               @channel = "/#{channel.token}"
-              BroadCast.push_message(@channel, living.to_hash)
             else
               Rails.logger.info("no channel find ----------------------------------------------------------")
+              @channel = "/default_error"
             end
+          else
+            @channel = "/#{user.username}"
           end
+          BroadCast.push_message(@channel, living.to_hash)
           render :json => {:result => I18n.t('application.live.success')}.to_json 
         else
           render :json => {:result => I18n.t('application.live.fail')}.to_json , :status => 400

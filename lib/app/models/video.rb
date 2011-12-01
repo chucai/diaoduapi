@@ -26,12 +26,15 @@ class Video < ActiveRecord::Base
       hash[:title] = self.title
       hash[:url] = self.url
       hash[:tid] =  self.tid
+      hash[:header] = self.user.header
       hash[:rtmp_url] = "rtmp://#{CONFIG_APP[:leshi_server_ip]}/#{self.tid}&live=1" 
     else
       hash[:type] = "ARCHIVED"
       hash[:id] = self.id
+      hash[:header] = self.user.header
       hash[:title] = self.title
       hash[:url] = self.url
+      hash[:preview_url] = self.preview
       hash[:tid] = self.tid
       hash[:rtmp_url] = "rtmp://#{CONFIG_APP[:leshi_server_ip]}/#{self.tid}&live=0" 
     end
