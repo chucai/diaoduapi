@@ -93,7 +93,6 @@ class Api::ServerController < ApplicationController
         if video
           c = Channel.find(:first , :conditions => ["video_id = ?", video.id])
           if c
-            c.update_attribute(:vstate, "archived")
             @channel = "/location/#{c.token}"
             c.update_attribute(:cstate, "archived")
           end
