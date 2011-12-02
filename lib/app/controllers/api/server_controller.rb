@@ -36,11 +36,13 @@ class Api::ServerController < ApplicationController
           user = archive.user
           if archive.private.eql?(2)
             channel = archive.channel || user.channels.living.last || user.channels.visited.last
-            Channel.transaction do 
-              channel.update_attribute(:cstate, "archive")  
-              channel.update_attribute(:video_id, archive.id)
+            if channel
+              Channel.transaction do 
+                channel.update_attribute(:cstate, "archive")  
+                channel.update_attribute(:video_id, archive.id)
+              end
+              @channel = "/#{channel.token}"
             end
-            @channel = "/#{channel.token}"
           else
             @channel = "/#{user.username}"
           end
