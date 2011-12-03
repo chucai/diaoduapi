@@ -13,10 +13,11 @@ class BroadCast
     "http://#{CONFIG_APP[:leshi_server_ip]}:#{CONFIG_APP[:faye_port]}/#{CONFIG_APP[:faye_name]}"
   end
 
-  def self.push_message_to_apple(token, message)
+  #flag is 0, 1, 2...
+  def self.push_message_to_apple(token, message, flag = 100)
     d = Object.new
     d.extend ApplePushNotification
     d.device_token = token
-    d.send_notification :alert => message 
+    d.send_notification :alert =>  message, :flag => flag
   end
 end
