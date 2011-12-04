@@ -23,22 +23,22 @@ class Api::ServerController < ApplicationController
      render :status => 400, :json => {:result => "fail"}.to_json
     end
   end
-  
+
   def save_archived
     respond_to do |format|
       format.json {
         archive = Video.find_by_tid(params[:video][:tid])
-        Archive.transaction do 
-          archive.update_attributes(params[:video]) 
-          archive.update_attribute(:vstate, 'archived') 
+        Video.transaction do
+          archive.update_attributes(params[:video])
+          archive.update_attribute(:vstate, 'archived')
         end if archive
         if archive and archive.save!
           user = archive.user
           if archive.private.eql?(2)
             channel = archive.channel || user.channels.living.last || user.channels.visited.last
             if channel
-              Channel.transaction do 
-                channel.update_attribute(:cstate, "archive")  
+              Channel.transaction do
+                channel.update_attribute(:cstate, "archive")
                 channel.update_attribute(:video_id, archive.id)
               end
               @channel = "/#{channel.token}"
@@ -66,7 +66,7 @@ class Api::ServerController < ApplicationController
             channel = user.channels.created.first || user.channels.visited.first
             if channel
               Channel.transaction do
-                channel.update_attribute(:cstate, "living")  
+                channel.update_attribute(:cstate, "living")
                 channel.update_attribute(:video_id, living.id)
               end
               @channel = "/#{channel.token}"
@@ -78,7 +78,7 @@ class Api::ServerController < ApplicationController
             @channel = "/#{user.username}"
           end
           BroadCast.push_message(@channel, living.to_hash)
-          render :json => {:result => I18n.t('application.live.success')}.to_json 
+          render :json => {:result => I18n.t('application.live.success')}.to_json
         else
           render :json => {:result => I18n.t('application.live.fail')}.to_json , :status => 400
         end
@@ -98,7 +98,7 @@ class Api::ServerController < ApplicationController
             @channel = "/location/#{c.token}"
             c.update_attribute(:cstate, "archived")
           end
-        end 
+        end
         hash = {}
         status = 400
         result = {}

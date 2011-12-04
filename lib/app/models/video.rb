@@ -9,6 +9,10 @@ class Video < ActiveRecord::Base
   named_scope :living, :conditions => ["vstate = 'living'"]
   named_scope :archived, :conditions => ["vstate = 'archived'"]
 
+
+  #should install geocoder, see: https://github.com/alexreisner/geocoder
+  #geocoded_by :address, :latitude  => :lat, :longitude => :lng
+
   def vstate_value
     self.living? ? 1 : 0
   end
@@ -61,6 +65,6 @@ class Video < ActiveRecord::Base
   end
 
   def find_comments_by_tid
-    Comment.find :all, :conditions => ["tid = ?", self.tid], :order => ["created_at DESC"]
+    Comment.find :all, :conditions => ["tid = ?", self.tid], :order => ["created_at ASC"]
   end
 end

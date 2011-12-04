@@ -29,7 +29,7 @@ class Channel < ActiveRecord::Base
 
   def push_message_to_client
     BroadCast.push_message_to_apple(self.user.apple_token,
-      I18n.t("application.apple.visited_success")) if self.is_apple_client?
+      I18n.t("application.apple.visited_success")) if self.user.is_apple_client?
   end
 
   protected
