@@ -4,6 +4,7 @@ class Video < ActiveRecord::Base
 
   belongs_to :user
   has_one :channel
+  has_many :comments, :include => :user
 
   named_scope :recently_resource, :order => "created_at DESC"
   named_scope :living, :conditions => ["vstate = 'living'"]
@@ -60,11 +61,4 @@ class Video < ActiveRecord::Base
     "#{self.server_url}#{self.tid}.jpg"
   end
 
-  def comments
-    find_comments_by_tid
-  end
-
-  def find_comments_by_tid
-    Comment.find :all, :conditions => ["tid = ?", self.tid], :order => ["created_at ASC"]
-  end
 end

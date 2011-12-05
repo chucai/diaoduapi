@@ -65,10 +65,11 @@ class Api::ServerController < ApplicationController
           if living.private.eql?(2)
             channel = user.channels.created.first || user.channels.visited.first
             if channel
-              Channel.transaction do
-                channel.update_attribute(:cstate, "living")
-                channel.update_attribute(:video_id, living.id)
-              end
+              channel.update_attributes({:cstate => "living", :video_id => living.id})
+              # Channel.transaction do
+              #   channel.update_attribute(:cstate, "living")
+              #   channel.update_attribute(:video_id, living.id)
+              # end
               @channel = "/#{channel.token}"
             else
               Rails.logger.info("no channel find ----------------------------------------------------------")
@@ -77,6 +78,7 @@ class Api::ServerController < ApplicationController
           else
             @channel = "/#{user.username}"
           end
+          Rails.logger.info(living.to_hash.inspect)
           BroadCast.push_message(@channel, living.to_hash)
           render :json => {:result => I18n.t('application.live.success')}.to_json
         else
