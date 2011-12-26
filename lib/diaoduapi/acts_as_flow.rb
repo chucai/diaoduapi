@@ -5,8 +5,8 @@ module Didaoduapi
 
   module ClassMethods
     def acts_as_flow(options = {})
-      send :include , InstanceMethods 
-   
+      send :include , InstanceMethods
+
       has_many :videos, :dependent => :destroy
       has_many :channels
 
@@ -19,7 +19,7 @@ module Didaoduapi
           false
         end
       end
-      
+
       def self.mk_one_password(key)
         require 'md5'
         tmp = MD5.md5
@@ -27,7 +27,7 @@ module Didaoduapi
         tmp.update([Time.now.to_i.to_s].pack("H*"))
         return tmp.to_s
       end
-     
+
       def self.login_from_client(username, password, ver, ext)
         hash = {}
         user = User.find_by_username(username)
@@ -39,6 +39,24 @@ module Didaoduapi
         hash[:newversion] = false
         return hash
       end
+
+      #save log file
+      def save_log file
+        name =  get_filename(file.original_filename)
+        directory = CONFIG_APP[:client_log] || "client_log"
+        path = File.join(directory, name)
+        File.open(path, "wb") { |f| f.write(file.read) }
+        return name
+      end
+
+      def get_filename(original_filename)
+        if original_filename
+          Time.now.strftime("%Y-%m-%d-%H-%M-%S") + original_filename
+        else
+          Time.now.strftime("%Y-%m-%d-%H-%M-%S") + Time.now.to_i.to_s + ".txt"
+        end
+      end
+
     end
 
   end
@@ -70,6 +88,7 @@ module Didaoduapi
       end
       hash
     end
+
   end
 
 end

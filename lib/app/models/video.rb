@@ -32,10 +32,14 @@ class Video < ActiveRecord::Base
     if self.living?
       hash[:type] = "LIVING"
       hash[:title] = self.title
+      hash[:id] = self.id
       hash[:url] = self.url
       hash[:tid] =  self.tid
       hash[:header] = self.user.header
       hash[:rtmp_url] = "rtmp://#{CONFIG_APP[:leshi_server_ip]}/#{self.tid}&live=1"
+      hash[:created] = self.created_at.to_s(:db)
+      hash[:visited] = self.visited
+      hash[:comments_count] = self.comments.count()
     else
       hash[:type] = "ARCHIVED"
       hash[:id] = self.id
@@ -44,6 +48,9 @@ class Video < ActiveRecord::Base
       hash[:url] = self.url
       hash[:preview_url] = self.preview
       hash[:tid] = self.tid
+      hash[:created] = self.created_at.to_s(:db)
+      hash[:visited] = self.visited
+      hash[:comments_count] = self.comments.count()
       hash[:rtmp_url] = "rtmp://#{CONFIG_APP[:leshi_server_ip]}/#{self.tid}&live=0"
     end
     hash

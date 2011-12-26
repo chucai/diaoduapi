@@ -1,7 +1,7 @@
 class Api::ClientController < ApplicationController
-  #protect_from_forgery :except => [:create,:save_archived, :save_live]
+  protect_from_forgery :except => [:upload_file]
   before_filter :authenticate_user!,:except => [:register]
-  
+
   def register
     respond_to do |format|
       format.json{
@@ -12,7 +12,7 @@ class Api::ClientController < ApplicationController
           Rails.logger.info("#{result.inspect}")
           render :json => result.to_json
         else
- 	  result[:result] = u.errors.full_messages.join(",") 
+ 	  result[:result] = u.errors.full_messages.join(",")
           Rails.logger.info("#{result.inspect}")
           render :json => result.to_json, :status => 400
         end
@@ -20,7 +20,7 @@ class Api::ClientController < ApplicationController
     end
   end
 
- 
+
   #创建channel,并于用户关联，返回给手机客户端channel号和URL地址
   #channel: user_id, token, cstate('created'-> default,'visited','living','archive'),number(default = 0), video_id:视频编号
   def create_channel
@@ -33,6 +33,8 @@ class Api::ClientController < ApplicationController
         })
         result[:channel] = channel.token
         result[:url] = channel.get_url
+        result[:type] = "CHANNEL"
+        BroadCast.push_message("/#{current_user.username}", result)
         render :json => result.to_json
       }
     end
@@ -57,7 +59,7 @@ class Api::ClientController < ApplicationController
       format.json {
         result = {}
         result[:state] = visited.nil? ? "novisited" : "visited"
-        result[:numbers] = visited.nil? ? 0 : visited.number  
+        result[:numbers] = visited.nil? ? 0 : visited.number
         render :json => result.to_json
       }
     end
@@ -89,9 +91,22 @@ class Api::ClientController < ApplicationController
         video = Video.find_by_tid(params[:tid])
         if(video.user == current_user and video.update_attributes(params[:video]))
           render :json => {:result => "update success!"}
-        else 
+        else
           render :json => {:result => "update failed!"}, :status => 400
-        end 
+        end
+      }
+    end
+  end
+
+  #upload log file to server
+  def upload_file
+    respond_to do |wants|
+      wants.html {
+        filename = User.save_log(params[:file])
+        recipient = ["wen-hanyang@163.com", "hexudong08@gmail.com"]
+        subject = "客户端日志bug文件"
+        LoggerMailer.delay.deliver_contact(recipient, subject, filename)
+        render :json => {:result => "ok"}.to_json
       }
     end
   end

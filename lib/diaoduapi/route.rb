@@ -8,6 +8,7 @@ module Diaoduapi #nodoc
         @set.add_route("/api/destroy_channel.:format",{:namespace => "api", :controller => "client", :action => "destroy_channel"})
         @set.add_route("/api/channel_notice.:format",{:namespace => "api", :controller => "client", :action => "notice_channel"})
         @set.add_route("/api/change_password.:format",{:namespace => "api", :controller => "client", :action => "password"})
+        @set.add_route("/api/upload_file.:format",{:namespace  => "api", :controller => "client", :action => "upload_file"})
 
         @set.add_route("/api/archived.:format", {:namespace => "api", :controller => "server", :action => "save_archived"})
         @set.add_route("/api/live.:format", {:namespace => "api", :controller => "server", :action => "save_live"})

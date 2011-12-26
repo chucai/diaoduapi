@@ -37,10 +37,11 @@ class Api::ServerController < ApplicationController
           if archive.private.eql?(2)
             channel = archive.channel || user.channels.living.last || user.channels.visited.last
             if channel
-              Channel.transaction do
-                channel.update_attribute(:cstate, "archive")
-                channel.update_attribute(:video_id, archive.id)
-              end
+              channel.update_attributes({ :cstate => "archive", :video_id => archive.id })
+              # Channel.transaction do
+              #   channel.update_attribute(:cstate, "archive")
+              #   channel.update_attribute(:video_id, archive.id)
+              # end
               @channel = "/#{channel.token}"
             end
           else
@@ -66,10 +67,6 @@ class Api::ServerController < ApplicationController
             channel = user.channels.created.first || user.channels.visited.first
             if channel
               channel.update_attributes({:cstate => "living", :video_id => living.id})
-              # Channel.transaction do
-              #   channel.update_attribute(:cstate, "living")
-              #   channel.update_attribute(:video_id, living.id)
-              # end
               @channel = "/#{channel.token}"
             else
               Rails.logger.info("no channel find ----------------------------------------------------------")
