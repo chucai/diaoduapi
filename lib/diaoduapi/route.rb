@@ -15,6 +15,7 @@ module Diaoduapi #nodoc
         @set.add_route("/api/location.:format", {:namespace => "api", :controller => "server", :action => "location"})
         @set.add_route("/api/server_token.:format", {:namespace => "api", :controller => "server", :action => "server_token"})
         @set.add_route("/api/login.:format", {:namespace => "api", :controller => "server", :action => "login"})
+        @set.add_route("/api/upload.:format", {:namespace => "api", :controller => "server", :action => "upload"})
       end
     end
   end

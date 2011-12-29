@@ -89,7 +89,7 @@ class Api::ClientController < ApplicationController
     respond_to do |wants|
       wants.json{
         video = Video.find_by_tid(params[:tid])
-        if(video.user == current_user and video.update_attributes(params[:video]))
+        if(video && video.user == current_user && video.update_attributes(params[:video]))
           render :json => {:result => "update success!"}
         else
           render :json => {:result => "update failed!"}, :status => 400

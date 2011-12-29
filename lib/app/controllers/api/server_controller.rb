@@ -59,7 +59,7 @@ class Api::ServerController < ApplicationController
   def save_live
     respond_to do |format|
       format.json {
-        user = User.find_by_username(params[:username])
+        user = User.find_by_login(params[:username])
         living = Video.new(params[:video])
         living.user = user
         if user and living.save!
@@ -108,6 +108,39 @@ class Api::ServerController < ApplicationController
           hash = { :result => "修改失败,视频不存在"}
         end
         render :json => hash.to_json, :status => status
+      }
+    end
+  end
+
+  #upload file
+  def upload
+    respond_to do |wants|
+      wants.json {
+        user = User.find_by_login(params["username"])
+        if user and params and !params.empty? and params.has_key?(:id)
+           video = Video.find_by_tid(params["id"])
+           p = {
+             :title => params["title"] || "无题",
+             :tid => params["id"],
+             :private => 1 - params[:share].to_i,
+             :encoding => "flv/mp3/h263",
+             :user_id => user.id,
+             :length => params[:length] || 100 ,
+             :size => params[:size] || "176x144",
+             :vstate => "archived",
+             :server_url => params[:server_url] || "http://192.168.1.92:24537/",
+             :file_size => 0
+           }
+           unless video
+             video = Video.create!(p)
+           else
+             video.update_attributes(p)
+           end
+           video.convert_3gp_to_flv
+           render :text => "ok", :layout => false
+        else
+          render :text => "fail", :layout => false, :status => 400
+        end
       }
     end
   end

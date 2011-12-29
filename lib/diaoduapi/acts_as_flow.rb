@@ -11,8 +11,7 @@ module Didaoduapi
       has_many :channels
 
       def self.authenticate_for_mobile?(username, challenge,response)
-        return true
-        u = find_by_username(username)
+        u = find_by_login(username)
         if u
           response == u.jiami_password(challenge)
         else
@@ -65,10 +64,16 @@ module Didaoduapi
     def jiami_password(challenge)
       require 'md5'
       md = MD5.md5
-      pwd = self["pwd"]
+      f = FlowMedia.find_by_user_id(self.id)
+      return false unless f
+      pwd = f.ss_key
+      logger.info("password is : #{pwd}")
       pd = MD5.hexdigest(pwd)
+      logger.info("pd is #{pd.to_s}")
       md.update([pd].pack("H*"))
+      logger.info("md1 is #{md.to_s}")
       md.update([challenge].pack("H*"))
+      logger.info("md5 response is #{md.to_s}")
       return md.to_s
     end
 

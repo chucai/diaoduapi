@@ -68,4 +68,51 @@ class Video < ActiveRecord::Base
     "#{self.server_url}#{self.tid}.jpg"
   end
 
+  def up_visited
+    self.update_attribute(:visited, self.visited+1)
+  end
+
+  #begin convert_3gp_to_flv
+  #convert 3gp to flv
+  #@command : ffmpeg -i lib/176-1.3gp -ar 22050 lib/176-1.flv
+  def convert_3gp_to_flv
+    path = File.join("#{RAILS_ROOT}",CONFIG_APP[:leshi_server_dir])
+    filename = "#{self.tid}.flv"
+    ext_name = File.extname(filename)
+    pure_name = File.basename(filename, ext_name)
+    gp_file = "#{self.tid}.3gp"
+    new_name = "#{pure_name}_tmp.flv"
+    tmp_name = "#{pure_name}.flv"
+    new_file_path = File.join(path, new_name)
+    tmp_file_path = File.join(path, tmp_name)
+    size = self.size || "176x144"
+    #convert
+    begin
+      result_cmd = system("ffmpeg -i #{File.join(path,gp_file)} -ar 22050 #{new_file_path}")
+      if result_cmd && File.exist?(new_file_path)
+        self.update_attribute(:file_size, File.size?(new_file_path))
+        if File.exist?(tmp_file_path)
+          File.delete(tmp_file_path)
+          File.rename(new_file_path, tmp_file_path)
+        else
+          File.rename(new_file_path, tmp_file_path)
+        end
+        #image
+        jpg_path = File.join(path,"#{pure_name}.jpg")
+        puts jpg_path
+        puts "ffmpeg -i #{File.join(path,gp_file)} -y -f image2 -t 0.01 -s #{size} #{jpg_path}"
+        unless File.exist?(jpg_path)
+          puts "come here-------------------------------------------------"
+          system("ffmpeg -i #{File.join(path,gp_file)} -y -f image2 -t 0.01 -s #{size} #{jpg_path}")
+        end
+      end
+    rescue Exception => e
+      Rails.logger.info(e)
+    end
+  end
+  #end convert_3gp_to_flv
+
+
+
+
 end
