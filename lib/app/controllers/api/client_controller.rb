@@ -34,7 +34,7 @@ class Api::ClientController < ApplicationController
         result[:channel] = channel.token
         result[:url] = channel.get_url
         result[:type] = "CHANNEL"
-        BroadCast.push_message("/#{current_user.username}", result)
+        BroadCast.push_message("/#{current_user.faye_token}", result)
         render :json => result.to_json
       }
     end
@@ -102,6 +102,13 @@ class Api::ClientController < ApplicationController
   def upload_file
     respond_to do |wants|
       wants.html {
+        filename = User.save_log(params[:file])
+        recipient = ["wen-hanyang@163.com", "hexudong08@gmail.com"]
+        subject = "客户端日志bug文件"
+        LoggerMailer.delay.deliver_contact(recipient, subject, filename)
+        render :json => {:result => "ok"}.to_json
+      }
+      wants.json {
         filename = User.save_log(params[:file])
         recipient = ["wen-hanyang@163.com", "hexudong08@gmail.com"]
         subject = "客户端日志bug文件"

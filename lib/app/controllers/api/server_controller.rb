@@ -45,7 +45,7 @@ class Api::ServerController < ApplicationController
               @channel = "/#{channel.token}"
             end
           else
-            @channel = "/#{user.username}"
+            @channel = "/#{user.faye_token}"
           end
           BroadCast.push_message(@channel, archive.to_hash)
           render :json => {:result => I18n.t('application.archived.success')}.to_json
@@ -73,7 +73,7 @@ class Api::ServerController < ApplicationController
               @channel = "/default_error"
             end
           else
-            @channel = "/#{user.username}"
+            @channel = "/#{user.faye_token}"
           end
           Rails.logger.info(living.to_hash.inspect)
           BroadCast.push_message(@channel, living.to_hash)

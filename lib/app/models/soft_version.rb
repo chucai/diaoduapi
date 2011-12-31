@@ -38,7 +38,7 @@ class SoftVersion < ActiveRecord::Base
       hash = {
        :android => "a",
        :symbian => "s",
-       :iphone => "0"
+       :iphone => "i"
       }
       hash[name.to_sym]
     end
