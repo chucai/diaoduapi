@@ -20,6 +20,6 @@ class BroadCast
     d = Object.new
     d.extend ApplePushNotification
     d.device_token = token
-    d.send_notification :alert =>  message, :flag => flag
+    d.send_notification :alert =>  message, :sound => true, :flag => flag
   end
 end

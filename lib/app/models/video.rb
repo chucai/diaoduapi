@@ -1,7 +1,6 @@
 class Video < ActiveRecord::Base
   validates_presence_of :user_id, :encoding, :size, :tid, :server_url
   validates_uniqueness_of :tid
-
   belongs_to :user
   has_one :channel
   has_many :comments, :include => :user
@@ -112,7 +111,12 @@ class Video < ActiveRecord::Base
   end
   #end convert_3gp_to_flv
 
-
+  def absolute_destroy?
+    path = File.join(RAILS_ROOT,"public","video",self.tid)
+    system("rm -rf #{path}.*")
+    self.destroy
+    return true
+  end
 
 
 end
