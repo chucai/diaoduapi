@@ -38,6 +38,7 @@ class DiaoduapiCreateTables < ActiveRecord::Migration
       t.string   "cstate",     :limit => 20, :default => "created"
       t.integer  "number",                   :default => 0
       t.integer  "video_id"
+      t.integer  "visited",                  :default => 1
       t.timestamps
     end
   end

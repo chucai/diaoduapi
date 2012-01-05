@@ -28,22 +28,15 @@ class Api::ServerController < ApplicationController
     respond_to do |format|
       format.json {
         archive = Video.find_by_tid(params[:video][:tid])
-        Video.transaction do
-          archive.update_attributes(params[:video])
-          archive.update_attribute(:vstate, 'archived')
-        end if archive
-        if archive and archive.save!
+        if archive
+          Video.transaction do
+            archive.update_attributes(params[:video])
+            archive.update_attribute(:vstate, 'archived')
+          end
           user = archive.user
-          if archive.private.eql?(2)
-            channel = archive.channel || user.channels.living.last || user.channels.visited.last
-            if channel
-              channel.update_attributes({ :cstate => "archive", :video_id => archive.id })
-              # Channel.transaction do
-              #   channel.update_attribute(:cstate, "archive")
-              #   channel.update_attribute(:video_id, archive.id)
-              # end
-              @channel = "/#{channel.token}"
-            end
+          if archive.private.eql?(2) && (channel = archive.channel)
+            channel.update_attributes({ :cstate => "archive", :video_id => archive.id })
+            @channel = "/#{channel.token}"
           else
             @channel = "/#{user.faye_token}"
           end
@@ -64,7 +57,7 @@ class Api::ServerController < ApplicationController
         living.user = user
         if user and living.save!
           if living.private.eql?(2)
-            channel = user.channels.created.first || user.channels.visited.first
+            channel = user.channels.created.first
             if channel
               channel.update_attributes({:cstate => "living", :video_id => living.id})
               @channel = "/#{channel.token}"
@@ -94,7 +87,7 @@ class Api::ServerController < ApplicationController
         if video
           c = Channel.find(:first , :conditions => ["video_id = ?", video.id])
           if c
-            @channel = "/location/#{c.token}"
+            @channel = "/#{c.token}"
             c.update_attribute(:cstate, "archived")
           end
         end
@@ -102,8 +95,14 @@ class Api::ServerController < ApplicationController
         status = 400
         result = {}
         if video and video.update_attributes(params[:video])
-          hash = { :result => "修改成功"}
+          data = {
+            :lat => video.lat,
+            :lng => video.lng,
+            :type => "LOCATION",
+          }
+          BroadCast.push_message(@channel,data) if @channel
           status = 200
+          hash = { :result => "修改成功"}
         else
           hash = { :result => "修改失败,视频不存在"}
         end

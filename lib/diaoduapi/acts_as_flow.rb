@@ -84,6 +84,7 @@ module Didaoduapi
       flow = FlowMedia.save_or_update({:user_id => self.id, :ss_key => User.mk_one_password(ext[:key]), :expire_time => 3600 })
       hash[:ss_key] = flow.ss_key
       hash[:key_duration] = flow.expire_time
+      hash[:ver] = 1 #tell client server version
       new_version = SoftVersion.find_new_version_by_ver(ver)
       if ver and new_version and new_version.is_a?(SoftVersion)
         hash[:newversion] = true

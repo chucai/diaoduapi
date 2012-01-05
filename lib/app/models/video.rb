@@ -25,6 +25,10 @@ class Video < ActiveRecord::Base
     self.vstate == 'archived'
   end
 
+  def is_share_video?
+    self.private == 2
+  end
+
   #display data for client with hash to json
   def to_hash
     hash = Hash.new
@@ -36,8 +40,10 @@ class Video < ActiveRecord::Base
       hash[:tid] =  self.tid
       hash[:header] = self.user.header
       hash[:rtmp_url] = "rtmp://#{CONFIG_APP[:leshi_server_ip]}/#{self.tid}&live=1"
-      hash[:created] = self.created_at.to_s(:db)
+      hash[:created] = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
       hash[:visited] = self.visited
+      hash[:lat] = self.lat
+      hash[:lng] = self.lng
       hash[:comments_count] = self.comments.count()
     else
       hash[:type] = "ARCHIVED"
@@ -47,10 +53,13 @@ class Video < ActiveRecord::Base
       hash[:url] = self.url
       hash[:preview_url] = self.preview
       hash[:tid] = self.tid
-      hash[:created] = self.created_at.to_s(:db)
+      hash[:channel] = self.channel.token if self.is_share_video?
+      hash[:created] = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
       hash[:visited] = self.visited
       hash[:comments_count] = self.comments.count()
       hash[:rtmp_url] = "rtmp://#{CONFIG_APP[:leshi_server_ip]}/#{self.tid}&live=0"
+      hash[:lat] = self.lat
+      hash[:lng] = self.lng
     end
     hash
   end

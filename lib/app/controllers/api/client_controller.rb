@@ -22,12 +22,12 @@ class Api::ClientController < ApplicationController
 
 
   #创建channel,并于用户关联，返回给手机客户端channel号和URL地址
-  #channel: user_id, token, cstate('created'-> default,'visited','living','archive'),number(default = 0), video_id:视频编号
+  #channel: user_id, token, cstate('created'-> default,'living','archive'),number(default = 0), video_id:视频编号
   def create_channel
     respond_to do |format|
       format.json {
         result = {}
-        current_user.channels.should_delete.destroy_all
+        current_user.destroy_channel
         channel = Channel.create({
           :user_id => current_user.id
         })
@@ -42,7 +42,7 @@ class Api::ClientController < ApplicationController
 
   #销毁channel
   def destroy_channel
-    current_user.channels.should_delete.destroy_all
+    current_user.destroy_channel
     result = {:result => "ok"}
     respond_to do |format|
       format.json {
@@ -54,11 +54,11 @@ class Api::ClientController < ApplicationController
   #手机客户端轮询接口，返回是否有人查看该频道channel
   def notice_channel
     channel = params[:channel]
-    visited = current_user.channels.visited.find(:first, :conditions => ["token = ?",channel])
+    visited = current_user.channels.find(:first, :conditions => ["token = ?",channel])
     respond_to do |format|
       format.json {
         result = {}
-        result[:state] = visited.nil? ? "novisited" : "visited"
+        result[:state] = visited.cstate_value_for_client
         result[:numbers] = visited.nil? ? 0 : visited.number
         render :json => result.to_json
       }
