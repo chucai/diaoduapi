@@ -35,7 +35,7 @@ class Api::ServerController < ApplicationController
           end
           user = archive.user
           if archive.private.eql?(2) && (channel = archive.channel)
-            channel.update_attributes({ :cstate => "archive", :video_id => archive.id })
+            channel.update_attributes({ :cstate => "archived", :video_id => archive.id })
             @channel = "/#{channel.token}"
           else
             @channel = "/#{user.faye_token}"
