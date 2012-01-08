@@ -79,8 +79,12 @@ module Didaoduapi
 
     def values_for_mobile(ver,ext)
       hash = {}
-      hash[:ss_ip] = CONFIG_APP[:leshi_server_ip]
-      hash[:ss_port] = CONFIG_APP[:leshi_server_in_port]
+      # hash[:ss_ip] = CONFIG_APP[:leshi_server_ip]
+      # hash[:ss_port] = CONFIG_APP[:leshi_server_in_port]
+      # hash[:ss_ip] = %w(223.4.118.15 42.120.42.238)[rand(2)]
+      # hash[:ss_port] = 30710
+      ip_and_port = get_server_ip_and_port
+      hash[:ss_ip], hash[:ss_port] = ip_and_port.first, ip_and_port.last
       flow = FlowMedia.save_or_update({:user_id => self.id, :ss_key => User.mk_one_password(ext[:key]), :expire_time => 3600 })
       hash[:ss_key] = flow.ss_key
       hash[:key_duration] = flow.expire_time
@@ -93,6 +97,11 @@ module Didaoduapi
         hash[:newversion] = false
       end
       hash
+    end
+
+    def get_server_ip_and_port
+      ip = FlowIPGetway::Getway.get_server_ip_and_port
+      ip.split(":")
     end
 
   end

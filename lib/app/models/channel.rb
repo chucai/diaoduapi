@@ -36,7 +36,8 @@ class Channel < ActiveRecord::Base
   end
 
   def access?
-    self.visited <= CONFIG_APP[:channel_limit_visited].to_i && self.cstate != 'destroy'
+    #self.visited <= CONFIG_APP[:channel_limit_visited].to_i && self.cstate != 'destroy'
+    self.visited <= CONFIG_APP[:channel_limit_visited].to_i
   end
 
   def destroy_channel

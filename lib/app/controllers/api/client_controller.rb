@@ -1,6 +1,6 @@
 class Api::ClientController < ApplicationController
   protect_from_forgery :except => [:upload_file]
-  before_filter :authenticate_user!,:except => [:register]
+  before_filter :stop_visit_action_when_logout, :authenticate_user!,:except => [:register]
 
   def register
     respond_to do |format|
@@ -117,6 +117,25 @@ class Api::ClientController < ApplicationController
       }
     end
   end
+
+  #get_tid_ssip
+  def get_tid_ssip
+    respond_to do |wants|
+      wants.json {
+        tid = params[:tid]
+        video = current_user.videos.find_by_tid(tid)
+        result = {}
+        if video
+          result[:ss_ip] = video.ip_address
+          result[:ss_port] = video.ip_port
+        else
+          result[:result] = "no record"
+        end
+        render :json => result.to_json
+      }
+    end
+  end
+
 
 end
 

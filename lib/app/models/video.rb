@@ -39,7 +39,7 @@ class Video < ActiveRecord::Base
       hash[:url] = self.url
       hash[:tid] =  self.tid
       hash[:header] = self.user.header
-      hash[:rtmp_url] = "rtmp://#{CONFIG_APP[:leshi_server_ip]}/#{self.tid}&live=1"
+      hash[:rtmp_url] = "rtmp://#{self.ip_address}/#{self.tid}&live=1"
       hash[:created] = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
       hash[:visited] = self.visited
       hash[:lat] = self.lat
@@ -57,7 +57,7 @@ class Video < ActiveRecord::Base
       hash[:created] = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
       hash[:visited] = self.visited
       hash[:comments_count] = self.comments.count()
-      hash[:rtmp_url] = "rtmp://#{CONFIG_APP[:leshi_server_ip]}/#{self.tid}&live=0"
+      hash[:rtmp_url] = "rtmp://#{self.ip_address}/#{self.tid}&live=0"
       hash[:lat] = self.lat
       hash[:lng] = self.lng
     end
@@ -71,6 +71,15 @@ class Video < ActiveRecord::Base
   def url
     "#{self.server_url}#{self.tid}.flv"
   end
+
+  def ip_address
+    self.server_url.split("//").last.split(":").first
+  end
+
+  def ip_port
+    SERVER_CONFIG["server_ip"].split(" ").find { |ip| ip.split(":").first == self.ip_address }.split(":").last
+  end
+
 
   def preview
     "#{self.server_url}#{self.tid}.jpg"

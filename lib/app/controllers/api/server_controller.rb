@@ -1,5 +1,6 @@
 class Api::ServerController < ApplicationController
   layout false
+  before_filter :flow_server_filter
 
   #return token for system
   def server_token
@@ -88,7 +89,6 @@ class Api::ServerController < ApplicationController
           c = Channel.find(:first , :conditions => ["video_id = ?", video.id])
           if c
             @channel = "/#{c.token}"
-            c.update_attribute(:cstate, "archived")
           end
         end
         hash = {}
@@ -116,33 +116,36 @@ class Api::ServerController < ApplicationController
     respond_to do |wants|
       wants.json {
         user = User.find_by_login(params["username"])
-        if user and params and !params.empty? and params.has_key?(:id)
-           video = Video.find_by_tid(params["id"])
-           p = {
-             :title => params["title"] || "无题",
-             :tid => params["id"],
-             :private => 1 - params[:share].to_i,
-             :encoding => "flv/mp3/h263",
-             :user_id => user.id,
-             :length => params[:length] || 100 ,
-             :size => params[:size] || "176x144",
-             :vstate => "archived",
-             :server_url => params[:server_url] || "http://192.168.1.92:24537/",
-             :file_size => 0
-           }
-           unless video
-             video = Video.create!(p)
+        result = {}
+        if user
+           video = user.videos.find_by_tid(params["video"]["tid"])
+           if video
+             video.update_attributes(params[:video])
            else
-             video.update_attributes(p)
+             video = Video.create!(params[:video])
            end
-           video.convert_3gp_to_flv
-           render :text => "ok", :layout => false
+           result[:result] = "ok"
+           render result.to_json
         else
-          render :text => "fail", :layout => false, :status => 400
+          result[:result] = "fail"
+          render :json => result.to_json, :status => 400
         end
       }
     end
   end
 
+  private
+  #流媒体过滤器
+  def flow_server_filter
+    remote_ip = request.remote_ip
+    access_ip = SERVER_CONFIG["server_ip"].split(" ").map { |ip|  ip.split(":").first  }
+    unless access_ip.include?(remote_ip)
+      respond_to do |wants|
+        wants.json {
+          render :json => {:result => "非法访问" }.to_json, :status => 400
+        }
+      end
+    end
+  end
 
 end
