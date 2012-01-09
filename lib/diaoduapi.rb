@@ -1,3 +1,4 @@
+require 'diaoduapi/array_ext'
 require 'diaoduapi/route'
 require 'diaoduapi/acts_as_flow'
 
@@ -6,4 +7,4 @@ require 'diaoduapi/acts_as_flow'
   $LOAD_PATH << path
   ActiveSupport::Dependencies.load_paths << path
   ActiveSupport::Dependencies.load_once_paths.delete(path)
-end 
+end

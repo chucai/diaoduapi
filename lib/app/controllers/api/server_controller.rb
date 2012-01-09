@@ -125,7 +125,7 @@ class Api::ServerController < ApplicationController
              video = Video.create!(params[:video])
            end
            result[:result] = "ok"
-           render result.to_json
+           render :json =>  result.to_json
         else
           result[:result] = "fail"
           render :json => result.to_json, :status => 400
