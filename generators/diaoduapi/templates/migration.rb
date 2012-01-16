@@ -39,6 +39,8 @@ class DiaoduapiCreateTables < ActiveRecord::Migration
       t.integer  "number",                   :default => 0
       t.integer  "video_id"
       t.integer  "visited",                  :default => 1
+      t.string   "mobile"
+      t.string   "email"
       t.timestamps
     end
   end

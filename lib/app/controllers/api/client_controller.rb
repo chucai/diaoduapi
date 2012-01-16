@@ -29,13 +29,20 @@ class Api::ClientController < ApplicationController
         result = {}
         current_user.destroy_channel
         channel = Channel.create({
-          :user_id => current_user.id
+          :user_id => current_user.id,
+          :mobile => params[:mobile],
+          :email => params[:email]
         })
-        result[:channel] = channel.token
-        result[:url] = channel.get_url
-        result[:type] = "CHANNEL"
-        BroadCast.push_message("/#{current_user.faye_token}", result)
-        render :json => result.to_json
+        if channel
+          result[:channel] = channel.token
+          result[:url] = channel.get_url
+          result[:type] = "CHANNEL"
+          BroadCast.push_message("/#{current_user.faye_token}", result)
+          render :json => result.to_json
+        else
+          result[:reason] = "Channel create failed"
+          render :json => result.to_json, :status => 400
+        end
       }
     end
   end
