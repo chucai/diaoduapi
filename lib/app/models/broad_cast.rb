@@ -16,10 +16,10 @@ class BroadCast
   end
 
   #flag is 100...
-  def self.push_message_to_apple(token, message, flag = 100)
+  def self.push_message_to_apple(token, message, channel, flag = 100)
     d = Object.new
     d.extend ApplePushNotification
     d.device_token = token
-    d.send_notification :alert =>  message, :sound => true, :flag => flag
+    d.send_notification :alert =>  message, :sound => true, :cc => channel, :flag => flag
   end
 end
