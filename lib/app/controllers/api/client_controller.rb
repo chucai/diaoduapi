@@ -143,6 +143,20 @@ class Api::ClientController < ApplicationController
     end
   end
 
-
+  #save device infomation
+  def device_report
+    respond_to do |wants|
+      wants.json {
+        device = Device.new params[:device]
+        result = {}
+        if device.save
+          result[:result] = "ok"
+        else
+          result[:result] = "ok"
+        end
+        render :json => result.to_json
+      }
+    end
+  end
 end
 

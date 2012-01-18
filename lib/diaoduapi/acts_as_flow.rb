@@ -92,7 +92,11 @@ module Didaoduapi
       new_version = SoftVersion.find_new_version_by_ver(ver)
       if ver and new_version and new_version.is_a?(SoftVersion)
         hash[:newversion] = true
-        hash[:url] = "http://#{ext[:host_with_port]}/welcome/download?soft=#{new_version.soft_name}&from=client&version=#{new_version.version}"
+        if /i/.match(ver)
+          hash[:url] = "itms-apps://itunes.com/app/酷拍视频聊天"
+        else
+          hash[:url] = "http://#{ext[:host_with_port]}/welcome/download?soft=#{new_version.soft_name}&from=client&version=#{new_version.version}"
+        end
       else
         hash[:newversion] = false
       end

@@ -43,6 +43,17 @@ class DiaoduapiCreateTables < ActiveRecord::Migration
       t.string   "email"
       t.timestamps
     end
+
+    create_table "devices", :force => true do |t|
+      t.string   "device"
+      t.string   "rom_id"
+      t.string   "client",      :default => "ANDROID"
+      t.integer  "encode_mode", :default => 0
+      t.datetime "created_at"
+      t.datetime "updated_at"
+    end
+
+    add_index "devices", ["device", "rom_id"], :name => "index_devices_on_device_and_rom_id", :unique => true
   end
 
   def self.down
@@ -50,5 +61,6 @@ class DiaoduapiCreateTables < ActiveRecord::Migration
     drop_table :flow_medias
     drop_table :soft_versions
     drop_table :videos
+    drop_table :devices
   end
 end

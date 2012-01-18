@@ -10,6 +10,7 @@ module Diaoduapi #nodoc
         @set.add_route("/api/change_password.:format",{:namespace => "api", :controller => "client", :action => "password"})
         @set.add_route("/api/upload_file.:format",{:namespace  => "api", :controller => "client", :action => "upload_file"})
         @set.add_route("/api/get_tid_ssip.:format",{:namespace  => "api", :controller => "client", :action => "get_tid_ssip"})
+        @set.add_route("/api/device_report.:format",{:namespace  => "api", :controller => "client", :action => "device_report"})
 
         @set.add_route("/api/archived.:format", {:namespace => "api", :controller => "server", :action => "save_archived"})
         @set.add_route("/api/live.:format", {:namespace => "api", :controller => "server", :action => "save_live"})

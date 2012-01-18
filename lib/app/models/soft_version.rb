@@ -1,5 +1,5 @@
 class SoftVersion < ActiveRecord::Base
-  validates_inclusion_of :soft, :in => %w(a s o), :message => "软件操作系统选择错误"
+  validates_inclusion_of :soft, :in => %w(a s i), :message => "软件操作系统选择错误"
 
   #should be has one assoution
   belongs_to :upgrade, :class_name => "SoftVersion", :foreign_key => :upgrade_to
@@ -43,5 +43,5 @@ class SoftVersion < ActiveRecord::Base
       hash[name.to_sym]
     end
   end
-  
+
 end
