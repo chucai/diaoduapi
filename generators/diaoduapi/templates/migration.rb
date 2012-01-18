@@ -23,6 +23,7 @@ class DiaoduapiCreateTables < ActiveRecord::Migration
       t.string   "filename",   :limit => 50
       t.integer  "upgrade_to"
       t.integer  "dtimes",                   :default => 0
+      t.string   "feature"
       t.timestamps
     end
     create_table "flow_medias", :force => true do |t|

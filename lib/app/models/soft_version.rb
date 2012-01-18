@@ -17,6 +17,17 @@ class SoftVersion < ActiveRecord::Base
     end
   end
 
+  def apk_url
+    "http://#{CONFIG_APP[:web_server]}/welcome/download?soft=#{self.soft_name}"
+  end
+
+  def apk_size
+    File.size(File.join(Rails.root, "files", self.filename))
+  end
+
+  def feature_with_array_format
+    self.feature.split("|")
+  end
 
   class << self
     def find_new_version_by_ver(ver)

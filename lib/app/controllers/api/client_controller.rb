@@ -158,5 +158,24 @@ class Api::ClientController < ApplicationController
       }
     end
   end
+
+  #android客户端升级信息
+  def checkupdate
+    respond_to do |wants|
+      wants.json {
+        soft = SoftVersion.find_new_version_by_ver(params[:user_ver])
+        hash = {}
+        if soft
+          hash[:new_version] = "a0000#{soft.version}"
+          hash[:apk_url] = soft.apk_url
+          hash[:apk_size] = soft.apk_size
+          hash[:feature] = soft.feature_with_array_format
+        else
+          hash[:new_version] = false
+        end
+        render :json => hash.to_json
+      }
+    end
+  end
 end
 

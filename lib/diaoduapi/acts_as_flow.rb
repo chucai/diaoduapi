@@ -100,6 +100,8 @@ module Didaoduapi
       else
         hash[:newversion] = false
       end
+      device = Device.find_by_device_and_rom_id(ext[:device], ext[:rom_id])
+      hash[:encode_mode] = device.nil? ? 3 : device.encode_mode
       hash
     end
 
