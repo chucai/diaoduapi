@@ -95,8 +95,14 @@ module Didaoduapi
         if /i/.match(ver)
           hash[:url] = "itms-apps://itunes.com/app/酷拍视频聊天"
         else
-          hash[:url] = "http://#{ext[:host_with_port]}/welcome/download?soft=#{new_version.soft_name}&from=client&version=#{new_version.version}"
+          #hash[:url] = "http://#{ext[:host_with_port]}/welcome/download?soft=#{new_version.soft_name}&from=client&version=#{new_version.version}"
+          hash[:url] = new_version.apk_url
         end
+
+        #add for android
+        hash[:new_version] = new_version.apk_full_version
+        hash[:file_size] = new_version.apk_size
+        hash[:feature] = new_version.apk_feature
       else
         hash[:newversion] = false
       end

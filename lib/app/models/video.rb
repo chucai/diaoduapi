@@ -53,7 +53,7 @@ class Video < ActiveRecord::Base
       hash[:url] = self.url
       hash[:preview_url] = self.preview
       hash[:tid] = self.tid
-      hash[:channel] = self.channel.token if self.is_share_video?
+      hash[:channel] = self.channel.token if self.channel && self.is_share_video?
       hash[:created] = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
       hash[:visited] = self.visited
       hash[:comments_count] = self.comments.count()

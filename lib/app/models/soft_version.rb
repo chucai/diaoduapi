@@ -17,8 +17,16 @@ class SoftVersion < ActiveRecord::Base
     end
   end
 
+  def apk_feature
+    self.feature.split(";")
+  end
+
   def apk_url
     "http://#{CONFIG_APP[:web_server]}/welcome/download?soft=#{self.soft_name}"
+  end
+
+  def apk_full_version
+    "#{self.soft}#{self.company}#{self.version}"
   end
 
   def apk_size
